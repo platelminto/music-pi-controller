@@ -6,7 +6,7 @@ import dotenv
 
 dotenv.load_dotenv()
 
-pi_port = os.getenv("PI_PORT")
+pi_port = int(os.getenv("PI_PORT"))
 
 
 GPIO.setmode(GPIO.BCM)
