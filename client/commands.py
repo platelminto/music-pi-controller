@@ -17,7 +17,12 @@ def send_command(command):
     message = json.dumps(command)
     print(pi_ip, pi_port, message)
     sock.sendto(message.encode(), (pi_ip, pi_port))
-    # sock.close()
+
+
+def register_leds(led_pins):
+    command = {"cmd": "register-leds", "pins": led_pins}
+
+    send_command(command)
 
 
 def turn_led_on(led_id):
@@ -52,6 +57,8 @@ if __name__ == "__main__":
     led_ids = [18, 23, 24, 25, 8, 7, 1]
     power_percentage = 50  # Set LED to 50% power
     # set_led_power(led_id, power_percentage)
+
+    register_leds(led_ids)
 
     for led_id in led_ids:
         turn_led_on(led_id)
