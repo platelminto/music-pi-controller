@@ -43,11 +43,8 @@ def execute_command(command):
         # pwm.start(power)
     elif cmd == 'debug-print':
         message = command['message']
-        og_time = float(message)
-        diff_time = time.time() - og_time
-        times.append((og_time, diff_time))
-        print((og_time, diff_time))
 
+        print(message)
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server_address = ('', pi_port)

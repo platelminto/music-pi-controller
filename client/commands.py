@@ -49,9 +49,11 @@ def debug_print(message):
 
 
 if __name__ == "__main__":
-    led_id = 18  # Example LED pin
+    led_ids = [18, 23, 24, 25, 8, 7, 1]
     power_percentage = 50  # Set LED to 50% power
     # set_led_power(led_id, power_percentage)
-    for _ in range(100):
-        debug_print(time.time())
-        sleep(0.01)
+
+    for led_id in led_ids:
+        turn_led_on(led_id)
+        time.sleep(0.6)
+        turn_led_off(led_id)
