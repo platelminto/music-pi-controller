@@ -10,10 +10,7 @@ dotenv.load_dotenv()
 
 pi_port = int(os.getenv("PI_PORT"))
 
-
 GPIO.setmode(GPIO.BCM)
-
-times = []
 
 
 def execute_command(command):
@@ -27,9 +24,11 @@ def execute_command(command):
             GPIO.output(pin, GPIO.LOW)
     elif cmd == 'led-on':
         pin = command['pin']
+        print(f"Turning on LED {pin}")
         GPIO.output(pin, GPIO.HIGH)
     elif cmd == 'led-off':
         pin = command['pin']
+        print(f"Turning off LED {pin}")
         GPIO.output(pin, GPIO.LOW)
     elif cmd == 'set-power':
         pin = command['pin']
