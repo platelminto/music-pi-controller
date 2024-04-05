@@ -1,6 +1,8 @@
 import socket
 import json
 import os
+import time
+from time import sleep
 
 from dotenv import load_dotenv
 
@@ -40,8 +42,16 @@ def set_led_power(led_id, power_percentage):
     send_command(command)
 
 
+def debug_print(message):
+    command = {"cmd": "debug-print", "message": message}
+
+    send_command(command)
+
+
 if __name__ == "__main__":
     led_id = 18  # Example LED pin
     power_percentage = 50  # Set LED to 50% power
     # set_led_power(led_id, power_percentage)
-    turn_led_on(led_id)
+    for _ in range(100):
+        debug_print(time.time())
+        sleep(0.01)
