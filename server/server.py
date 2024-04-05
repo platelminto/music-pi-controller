@@ -13,15 +13,15 @@ GPIO.setmode(GPIO.BCM)
 
 
 def execute_command(command):
-    action = command['action']
+    cmd = command['cmd']
     pin = command['pin']
     GPIO.setup(pin, GPIO.OUT)
 
-    if action == 'led-on':
+    if cmd == 'led-on':
         GPIO.output(pin, GPIO.HIGH)
-    elif action == 'led-off':
+    elif cmd == 'led-off':
         GPIO.output(pin, GPIO.LOW)
-    elif action == 'set-power':
+    elif cmd == 'set-power':
         power = command['power']
         GPIO.output(pin, GPIO.HIGH)
 
