@@ -49,6 +49,7 @@ def execute_command(command):
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server_address = ('', pi_port)
 sock.bind(server_address)
+print(f'Listening on port {pi_port}...')
 
 while True:
     data, _ = sock.recvfrom(4096)
