@@ -20,6 +20,7 @@ def execute_command(command):
         pins = command['pins']
 
         for pin in pins:
+            print(f"Registering LED {pin}")
             GPIO.setup(pin, GPIO.OUT)
             GPIO.output(pin, GPIO.LOW)
     elif cmd == 'led-on':

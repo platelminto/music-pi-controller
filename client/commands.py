@@ -60,7 +60,7 @@ if __name__ == "__main__":
 
     register_leds(led_ids)
 
-    for led_id in led_ids:
-        turn_led_on(led_id)
-        time.sleep(0.6)
-        turn_led_off(led_id)
+    # for led_id in led_ids:
+    #     turn_led_on(led_id)
+    #     time.sleep(0.6)
+    #     turn_led_off(led_id)
