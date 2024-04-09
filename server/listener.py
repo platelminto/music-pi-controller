@@ -17,6 +17,7 @@ def execute_command(command):
     GPIO.setmode(GPIO.BCM)
 
     cmd = command['cmd']
+    print(command)
 
     if cmd == 'set-led':
         pin = command['pin']

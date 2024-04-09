@@ -12,11 +12,12 @@ load_dotenv()
 pi_ip = os.getenv("PI_IP")
 pi_port = int(os.getenv("PI_PORT"))
 
+MAIN_LEDS = [18, 23, 24, 25, 8, 7, 1]
+
 
 def send_command(command):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
     message = json.dumps(command)
-    print(pi_ip, pi_port, message)
     sock.sendto(message.encode(), (pi_ip, pi_port))
 
 
