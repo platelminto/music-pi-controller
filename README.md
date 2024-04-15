@@ -5,6 +5,7 @@
 - [x] Set up basic server on pi with high level API to control outputs from main computer
 - [x] Start with ~~10~~ 7 LEDs for frequency bands
 - [x] Set up main computer to send frequency data to pi
+- [x] Set up debug mode to test LEDs on a webpage
 - [ ] Add LED for beat from Spotify
 - [ ] Add considering tempo/velocity/whatever from Spotify for persistance and stuff
 - [ ] Show all LEDs when changing Spotify section? Or maybe when loudness big changes from segments? Investigate by graphing different things from known songs and see what feels right to visualise.

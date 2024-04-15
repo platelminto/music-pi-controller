@@ -5,57 +5,66 @@ import time
 from typing import Optional
 from concurrent.futures import ThreadPoolExecutor
 
-from dotenv import load_dotenv
-
-load_dotenv()
-
-pi_ip = os.getenv("PI_IP")
-pi_port = int(os.getenv("PI_PORT"))
+import requests
 
 MAIN_LEDS = [18, 23, 24, 25, 8, 7, 1]
 
+DEBUG = True
 
-def send_command(command):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
-    message = json.dumps(command)
-    sock.sendto(message.encode(), (pi_ip, pi_port))
+API_URL = "http://127.0.0.1:5000/set-led"  # URL to your Flask server's set-led endpoint
 
 
-def turn_led_on(led_id: int, duration: Optional[float] = None, power_percentage: int = 100):
-    if not (0 <= power_percentage <= 100):
-        raise ValueError("Power percentage must be between 0 and 100")
+class Controller:
+    def __init__(self, pi_ip=None, pi_port=None, debug=False):
+        self.pi_ip = pi_ip
+        self.pi_port = pi_port
+        self.debug = debug
 
-    command = {"cmd": "set-led", "pin": led_id, "power": power_percentage}
+    def send_command(self, command):
+        if self.debug:
+            try:
+                requests.post(API_URL, json=command)
+            except requests.exceptions.ConnectionError:
+                pass
+        # UDP socket communication
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        message = json.dumps(command)
+        sock.sendto(message.encode(), (self.pi_ip, self.pi_port))
+        sock.close()
 
-    send_command(command)
+    def turn_led_on(self, led_id: int, duration: Optional[float] = None, power_percentage: int = 100):
+        if not (0 <= power_percentage <= 100):
+            raise ValueError("Power percentage must be between 0 and 100")
 
-    if duration:
-        time.sleep(duration)
-        turn_led_off(led_id)
+        command = {"cmd": "set-led", "pin": led_id, "power": power_percentage}  # Adjust command structure for HTTP API
 
+        self.send_command(command)
 
-def turn_led_off(led_id):
-    command = {"cmd": "set-led", "pin": led_id, "power": 0}
+        if duration:
+            time.sleep(duration)
+            self.turn_led_off(led_id)
 
-    send_command(command)
+    def turn_led_off(self, led_id):
+        self.turn_led_on(led_id, power_percentage=0)
 
-
-def debug_print(message):
-    command = {"cmd": "debug-print", "message": message}
-
-    send_command(command)
+    def close(self):
+        # No WebSocket to close, so we don't need to do anything here
+        pass
 
 
 if __name__ == "__main__":
-    led_ids = [18, 23, 24, 25, 8, 7, 1]
+    controller = Controller(debug=DEBUG)
+
+    # controller.turn_led_on(18, 3, 100)
 
     executor = ThreadPoolExecutor()
-    executor.submit(turn_led_on, 18, 3, 20)
-    executor.submit(turn_led_on, 23, 3, 30)
-    executor.submit(turn_led_on, 24, 3, 40)
-    executor.submit(turn_led_on, 25, 3, 50)
-    executor.submit(turn_led_on, 8, 3, 60)
-    executor.submit(turn_led_on, 7, 3, 70)
-    executor.submit(turn_led_on, 1, 3, 80)
+    executor.submit(controller.turn_led_on, 18, None, 20)
+    executor.submit(controller.turn_led_on, 23, 3, 30)
+    executor.submit(controller.turn_led_on, 24, 3, 40)
+    executor.submit(controller.turn_led_on, 25, 3, 50)
+    executor.submit(controller.turn_led_on, 8, 3, 60)
+    executor.submit(controller.turn_led_on, 7, 3, 70)
+    executor.submit(controller.turn_led_on, 1, 3, 80)
     time.sleep(1)
-    executor.submit(turn_led_off, 18)
+    executor.submit(controller.turn_led_off, 18)
+

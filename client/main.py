@@ -1,3 +1,4 @@
+import os
 import time
 
 import pyaudio
@@ -5,7 +6,16 @@ import numpy as np
 import threading
 import collections
 
-from client.commands import turn_led_on, MAIN_LEDS, turn_led_off
+from dotenv import load_dotenv
+
+from client.commands import Controller, MAIN_LEDS
+
+DEBUG = True
+
+load_dotenv()
+
+pi_ip = os.getenv("PI_IP")
+pi_port = int(os.getenv("PI_PORT"))
 
 FORMAT = pyaudio.paFloat32
 CHANNELS = 1
@@ -45,20 +55,21 @@ def calculate_band_intensity(data, rate, band):
 shutdown_flag = threading.Event()
 
 
-def handle_intensity(intensity, led_id, recent_vals, persist_counter):
+def handle_intensity(controller, intensity, led_id, recent_vals, persist_counter):
     reset = False
 
     recent_mean = np.mean(recent_vals)
     if intensity > recent_mean * FREQ_MEAN_THRESHOLD:
-        turn_led_on(led_id, power_percentage=100)
+        controller.turn_led_on(led_id, power_percentage=100)
         reset = True
     elif persist_counter >= PERSIST_TIME:
-        turn_led_off(led_id)
+        controller.turn_led_off(led_id)
 
     return reset
 
 
 def process_audio():
+    controller = Controller(pi_ip, pi_port, debug=DEBUG)
     p = pyaudio.PyAudio()
     stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
     print("Waiting 2 seconds for audio to settle...")
@@ -73,7 +84,7 @@ def process_audio():
             for band in BANDS:
                 intensity = calculate_band_intensity(audio_data, RATE, band) * 100
                 recent_vals[band].append(intensity)
-                reset = handle_intensity(intensity, LED_BANDS[band],
+                reset = handle_intensity(controller, intensity, LED_BANDS[band],
                                  recent_vals[band], persist_counters[band])
                 persist_counters[band] += 1
                 if reset:
@@ -92,7 +103,9 @@ def process_audio():
         p.terminate()
 
         for led in MAIN_LEDS:
-            turn_led_off(led)
+            controller.turn_led_off(led)
+
+        controller.close()
 
 
 if __name__ == '__main__':

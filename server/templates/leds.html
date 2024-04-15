@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LED Control Panel</title>
+<style>
+    body {
+        background-color: #555; /* Slightly off-white background for softer contrast */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+    #leds-container {
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for the container */
+        background-color: #000; /* White background for the container */
+    }
+    .led {
+        width: 30px; /* Increased size */
+        height: 30px; /* Increased size */
+        border-radius: 50%;
+        display: inline-block;
+        margin: 0px;
+        background-color: #ddd; /* Default color for LEDs when off */
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Subtle shadow for each LED */
+        border: 1px solid #646464; /* Border for definition */
+    }
+    .red { background-color: #ff1500; }
+    .green { background-color: #00ad03; }
+    .yellow { background-color: #ffcf0f; }
+    .off { background-color: #4b3c3c; box-shadow: none; } /* LEDs appear flat when off */
+</style>
+
+
+</head>
+<body>
+    <div id="leds-container">
+        <div id="led-18" class="led"></div>
+        <div id="led-23" class="led"></div>
+        <div id="led-24" class="led"></div>
+        <div id="led-25" class="led"></div>
+        <div id="led-8" class="led"></div>
+        <div id="led-7" class="led"></div>
+        <div id="led-1" class="led"></div>
+    </div>
+
+<script>
+    function updateLEDs() {
+        fetch('/get-led-states')
+            .then(response => response.json())
+            .then(data => {
+                for (const pin in data) {
+                    const led = document.getElementById('led-' + pin);
+                    const power = data[pin];
+                    if (pin == 18 || pin == 23) {  // First two LEDs are red
+                        led.className = power > 0 ? 'led red' : 'led off';
+                    } else if (pin == 24 || pin == 25 || pin == 8) {  // Next three LEDs are green
+                        led.className = power > 0 ? 'led green' : 'led off';
+                    } else if (pin == 7 || pin == 1) {  // Last two LEDs are yellow
+                        led.className = power > 0 ? 'led yellow' : 'led off';
+                    }
+                }
+            })
+            .catch(error => console.log('Error fetching LED states:', error));
+    }
+
+    setInterval(updateLEDs, 20);
+</script>
+
+</body>
+</html>
