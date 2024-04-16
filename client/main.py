@@ -68,10 +68,34 @@ def handle_intensity(controller, intensity, led_id, recent_vals, persist_counter
     return reset
 
 
+def find_loopback_device(p):
+    info = p.get_host_api_info_by_index(0)
+    num_devices = info.get('deviceCount')
+    possible_devices = []
+    for i in range(num_devices):
+        if (p.get_device_info_by_host_api_device_index(0, i).get('maxInputChannels')) > 0:
+            name = p.get_device_info_by_host_api_device_index(0, i).get('name')
+            if 'loopback' in name.lower() or 'stereo mix' in name.lower():
+                possible_devices.append(i)
+
+    if possible_devices:
+        return possible_devices[-1]
+
+    return None
+
+
 def process_audio():
     controller = Controller(pi_ip, pi_port, debug=DEBUG)
     p = pyaudio.PyAudio()
-    stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
+
+    device_index = find_loopback_device(p)
+    if device_index is None:
+        print("No loopback device found. Check your sound settings.")
+        stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
+    else:
+        stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, input_device_index=device_index,
+                        frames_per_buffer=CHUNK)
+        print("Recording from speakers...")
     print("Waiting 2 seconds for audio to settle...")
     time.sleep(2)
     try:

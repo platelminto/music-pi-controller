@@ -14,3 +14,9 @@
 - [ ] Add screen to include lyrics
 - [ ] Possibly also an indicator of how much time is left in the song
 - [ ] Is input stuff useful from pi to Spotify?
+
+
+## Installation
+
+Most things are needed just for the debug server, rPI has few requirements. To get debug output working from speakers on Linux, had to run:
+- `sudo modprobe snd_aloop`
