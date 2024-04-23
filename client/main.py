@@ -90,7 +90,7 @@ def process_audio():
 
     device_index = find_loopback_device(p)
     if device_index is None:
-        print("No loopback device found. Check your sound settings.")
+        print("No loopback device found. Check your sound settings. (Not always an issue)")
         stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
     else:
         stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, input_device_index=device_index,

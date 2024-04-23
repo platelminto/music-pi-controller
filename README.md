@@ -18,5 +18,5 @@
 
 ## Installation
 
-Most things are needed just for the debug server, rPI has few requirements. To get debug output working from speakers on Linux, had to run:
+Most things are needed just for the debug server, rPI has few requirements. To get debug output working from speakers on (some) Linux, had to run:
 - `sudo modprobe snd_aloop`
