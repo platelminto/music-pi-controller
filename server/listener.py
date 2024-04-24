@@ -1,10 +1,11 @@
 import os
 import socket
 import json
-import time
 
 import RPi.GPIO as GPIO
 import dotenv
+
+from display import display_text, clear_display
 
 dotenv.load_dotenv()
 
@@ -34,12 +35,21 @@ def execute_command(command):
         pwm = pwm_leds[pin]
         duty_cycle = power
         pwm.ChangeDutyCycle(duty_cycle)
+
+    elif cmd == 'display-print':
+        message = command['message']
+        display_text(message)
+
+    elif cmd == 'display-clear':
+        clear_display()
+
     elif cmd == 'debug-print':
         message = command['message']
-
         print(message)
+
     else:
         print(f"Unknown command: {cmd}")
+
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server_address = ('', pi_port)
@@ -57,3 +67,4 @@ finally:
     for pwm in pwm_leds.values():
         pwm.stop()
     GPIO.cleanup()
+    clear_display()

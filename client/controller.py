@@ -32,6 +32,18 @@ class Controller:
         sock.sendto(message.encode(), (self.pi_ip, self.pi_port))
         sock.close()
 
+    def show_text(self, text: str, duration: Optional[float] = None):
+        command = {"cmd": "display-print", "message": text}
+        self.send_command(command)
+
+        if duration:
+            time.sleep(duration)
+            self.clear_text()
+
+    def clear_text(self):
+        command = {"cmd": "display-clear"}
+        self.send_command(command)
+
     def turn_led_on(self, led_id: int, duration: Optional[float] = None, power_percentage: int = 100):
         if not (0 <= power_percentage <= 100):
             raise ValueError("Power percentage must be between 0 and 100")
@@ -47,9 +59,11 @@ class Controller:
     def turn_led_off(self, led_id):
         self.turn_led_on(led_id, power_percentage=0)
 
-    def close(self):
-        # No WebSocket to close, so we don't need to do anything here
-        pass
+    def cleanup(self):
+        for led in MAIN_LEDS:
+            self.turn_led_off(led)
+
+        self.clear_text()
 
 
 if __name__ == "__main__":
