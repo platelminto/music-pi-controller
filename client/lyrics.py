@@ -21,7 +21,7 @@ sp = Spotify(os.getenv("SP_DC"))
 
 # lyrics object is None if no lyrics available, or has a 'syncType' key: can be 'UNSYNCED', 'LINE_SYNCED'
 class LyricsDisplayManager:
-    def __init__(self, controller, shutdown_flag):
+    def __init__(self, controller: Controller, shutdown_flag):
         self.last_song_id = None
         self.last_lyrics = None
         self.shutdown_flag = shutdown_flag

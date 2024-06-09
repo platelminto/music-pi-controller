@@ -11,7 +11,7 @@ MAIN_LEDS = [18, 23, 24, 25, 8, 7, 1]
 
 DEBUG = True
 
-API_URL = "http://127.0.0.1:5000/set-led"  # URL to your Flask server's set-led endpoint
+API_URL = "http://127.0.0.1:5000/"  # URL to your Flask server
 
 
 class Controller:
@@ -23,7 +23,7 @@ class Controller:
     def send_command(self, command):
         if self.debug:
             try:
-                requests.post(API_URL, json=command)
+                requests.post(API_URL + command["cmd"], json=command)
             except requests.exceptions.ConnectionError:
                 pass
         # UDP socket communication

@@ -23,11 +23,12 @@ if __name__ == '__main__':
     controller = Controller(pi_ip, pi_port, debug=DEBUG)
 
     audio_thread = threading.Thread(target=process_audio, args=(controller, shutdown_flag))
-    # audio_thread.start()
+    audio_thread.start()
 
     lyrics_manager = LyricsDisplayManager(controller, shutdown_flag)
-    #lyrics_thread = threading.Thread(target=process_lyrics, args=(controller, shutdown_flag))
-    #lyrics_thread.start()
+    # lyrics_manager.start()
+    # lyrics_thread = threading.Thread(target=process_lyrics, args=(controller, shutdown_flag))
+    # lyrics_thread.start()
 
     try:
         lyrics_manager.start()

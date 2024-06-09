@@ -7,6 +7,7 @@
     body {
         background-color: #555; /* Slightly off-white background for softer contrast */
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         min-height: 100vh;
@@ -18,6 +19,7 @@
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for the container */
         background-color: #000; /* White background for the container */
+        margin-bottom: 20px;
     }
     .led {
         width: 30px; /* Increased size */
@@ -33,9 +35,17 @@
     .green { background-color: #00ad03; }
     .yellow { background-color: #ffcf0f; }
     .off { background-color: #4b3c3c; box-shadow: none; } /* LEDs appear flat when off */
+    #status-box {
+        width: 100%;
+        max-width: 300px;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Subtle shadow for the text box */
+        background-color: #fff; /* Background for the text box */
+        color: #000; /* Text color */
+        text-align: center;
+    }
 </style>
-
-
 </head>
 <body>
     <div id="leds-container">
@@ -47,6 +57,7 @@
         <div id="led-7" class="led"></div>
         <div id="led-1" class="led"></div>
     </div>
+    <div id="status-box">Status: Waiting for updates...</div>
 
 <script>
     function updateLEDs() {
@@ -68,8 +79,22 @@
             .catch(error => console.log('Error fetching LED states:', error));
     }
 
-    setInterval(updateLEDs, 20);
-</script>
+    function updateStatusBox() {
+        fetch('/get-lyrics')
+            .then(response => response.json())
+            .then(data => {
+                const statusBox = document.getElementById('status-box');
+                statusBox.textContent = data['lyrics'];
+            })
+            .catch(error => {
+                console.log('Error fetching status:', error);
+                const statusBox = document.getElementById('status-box');
+                statusBox.textContent = 'Status: Error fetching status';
+            });
+    }
 
+    setInterval(updateLEDs, 20);
+    setInterval(updateStatusBox, 33);
+</script>
 </body>
 </html>
