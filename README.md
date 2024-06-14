@@ -20,3 +20,9 @@
 
 Most things are needed just for the debug server, rPI has few requirements. To get debug output working from speakers on (some) Linux, had to run:
 - `sudo modprobe snd_aloop`
+
+## Known issues
+
+- main client thread doesn't close because lyrics thread doesn't close correctly
+- text doesn't get cleared when new text is shown
+- if text doesn't fit it simply gets cut off.

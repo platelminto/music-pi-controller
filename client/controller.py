@@ -33,6 +33,8 @@ class Controller:
         sock.close()
 
     def show_text(self, text: str, duration: Optional[float] = None):
+        self.clear_text()
+
         command = {"cmd": "display-print", "message": text}
         self.send_command(command)
 

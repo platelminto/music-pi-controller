@@ -26,7 +26,7 @@ if __name__ == '__main__':
     audio_thread.start()
 
     lyrics_manager = LyricsDisplayManager(controller, shutdown_flag)
-    # lyrics_manager.start()
+    lyrics_manager.start()
     # lyrics_thread = threading.Thread(target=process_lyrics, args=(controller, shutdown_flag))
     # lyrics_thread.start()
 
